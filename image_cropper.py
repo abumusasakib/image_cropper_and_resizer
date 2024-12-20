@@ -5,6 +5,7 @@ import cv2
 import io
 import numpy as np
 import threading
+import traceback
 
 class ImageCropper:
     def __init__(self, root):
@@ -130,56 +131,75 @@ class ImageCropper:
             return
 
         # Prompt for resize and max file size in the main thread
+        
         resize = messagebox.askyesno("Resize", "Do you want to resize the cropped image?")
+        if resize:
+            width = simpledialog.askinteger("Width", "Enter the width:", initialvalue=300, minvalue=1)
+            height = simpledialog.askinteger("Height", "Enter the height:", initialvalue=300, minvalue=1)
+            if width is None or height is None:  # User canceled input
+                return
+        else:
+            width, height = None, None
+
+        # Prompt for max file size in the main thread
         max_file_size_kb = simpledialog.askinteger("Max File Size", "Enter the max file size (KB):", initialvalue=100, minvalue=1)
         if max_file_size_kb is None:  # User canceled input
             return
 
         # Start saving process in a separate thread
-        threading.Thread(target=self.process_crop, args=(resize, max_file_size_kb)).start()
+        threading.Thread(target=self.process_crop, args=(resize, width, height, max_file_size_kb)).start()
 
-    def process_crop(self, resize, max_file_size_kb):
+    def process_crop(self, resize, width, height, max_file_size_kb):
         self.show_loading("Processing crop...")
 
-        # Calculate the crop coordinates on the original image
-        x1, y1, x2, y2 = self.crop_rect
-        x1 = int(x1 / self.scale_ratio)
-        y1 = int(y1 / self.scale_ratio)
-        x2 = int(x2 / self.scale_ratio)
-        y2 = int(y2 / self.scale_ratio)
+        try:
+            # Calculate the crop coordinates on the original image
+            x1, y1, x2, y2 = self.crop_rect
+            x1 = int(x1 / self.scale_ratio)
+            y1 = int(y1 / self.scale_ratio)
+            x2 = int(x2 / self.scale_ratio)
+            y2 = int(y2 / self.scale_ratio)
 
-        cropped_image = self.image[y1:y2, x1:x2]
+            cropped_image = self.image[y1:y2, x1:x2]
 
-        if resize:
-            width = simpledialog.askinteger("Width", "Enter the width:", initialvalue=300, minvalue=1)
-            height = simpledialog.askinteger("Height", "Enter the height:", initialvalue=300, minvalue=1)
-            if width and height:
-                cropped_image_pil = Image.fromarray(cv2.cvtColor(cropped_image, cv2.COLOR_BGR2RGB)).resize((width, height))
+            if resize and width and height:
+                if width > 0 and height > 0:
+                    cropped_image_pil = Image.fromarray(cv2.cvtColor(cropped_image, cv2.COLOR_BGR2RGB)).resize((width, height))
+                else:
+                    return
             else:
-                return
-        else:
-            cropped_image_pil = Image.fromarray(cv2.cvtColor(cropped_image, cv2.COLOR_BGR2RGB))
+                cropped_image_pil = Image.fromarray(cv2.cvtColor(cropped_image, cv2.COLOR_BGR2RGB))
 
-        max_file_size = max_file_size_kb * 1024  # Convert to bytes
-        quality = 95
-        success = False
-        while True:
-            with io.BytesIO() as buffer:
-                cropped_image_pil.save(buffer, format="JPEG", quality=quality)
-                size = buffer.tell()
-                if size <= max_file_size or quality <= 10:
-                    file_path = filedialog.asksaveasfilename(defaultextension=".jpg", filetypes=[("JPEG files", "*.jpg")])
-                    if file_path:
-                        cropped_image_pil.save(file_path, format="JPEG", quality=quality)
-                        messagebox.showinfo("Success", "Image cropped and saved successfully.")
-                        success = True
-                    break
-                quality -= 5
+            max_file_size = max_file_size_kb * 1024  # Convert to bytes
+            quality = 95
+            success = False
+            while True:
+                with io.BytesIO() as buffer:
+                    cropped_image_pil.save(buffer, format="JPEG", quality=quality)
+                    size = buffer.tell()
+                    if size <= max_file_size or quality <= 10:
+                        file_path = filedialog.asksaveasfilename(defaultextension=".jpg", filetypes=[("JPEG files", "*.jpg")])
+                        if file_path:
+                            cropped_image_pil.save(file_path, format="JPEG", quality=quality)
+                            messagebox.showinfo("Success", "Image cropped and saved successfully.")
+                            success = True
+                        break
+                    quality -= 5
 
-        if not success:
-            messagebox.showerror("Error", "Failed to save the image within the specified size constraints.")
+            if not success:
+                messagebox.showerror("Error", "Failed to save the image within the specified size constraints.")
+        except Exception as e:
+            # Log detailed traceback for debugging
+            error_traceback = traceback.format_exc()
+            print("Error occurred:\n", error_traceback)
 
-        self.show_loading("")  # Hide loading indication after completion
+            # Show error message to the user
+            messagebox.showerror(
+                "Error",
+                f"An error occurred while processing the crop:\n{str(e)}\n\nDetails:\n{error_traceback}"
+            )
+        finally:
+            self.show_loading("")  # Hide loading indication after completion
 
 if __name__ == "__main__":
     root = tk.Tk()
