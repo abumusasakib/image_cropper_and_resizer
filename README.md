@@ -19,7 +19,8 @@ This project provides three main tools — **ImageCropper**, **ImageResizer**, a
 ### Image Resizer
 
 - **Resize and Save Images:** Resize an entire image to desired dimensions.
-- **Batch Resizing (Optional):** Can be extended to support batch image resizing if desired.
+- **Drag & Drop Support:** Drag and drop an image file directly onto the window to open it, with visual placeholder guidance.
+- **Zero Size Limit Bypass:** Enter `0` for min/max size limits to bypass size constraints optimization loop and save directly.
 - **Preserve Aspect Ratio (Optional):** Choose to maintain the original aspect ratio while resizing.
 
 ### Image Batch Resizer (NEW)
@@ -36,13 +37,15 @@ This project provides three main tools — **ImageCropper**, **ImageResizer**, a
 - **Python 3.7+**
 - **Packages:**
   - `Pillow` (PIL)
-  - `opencv-python`
+  - `tkinterdnd2` (For Drag and Drop capability)
+  - `opencv-python` (Used by ImageCropper)
+  - `numpy` (Used by ImageCropper)
   - `tkinter` (usually included with Python installations)
 
 Install required packages:
 
 ```bash
-pip install pillow opencv-python
+pip install -r requirements.txt
 ````
 
 ## Setup
