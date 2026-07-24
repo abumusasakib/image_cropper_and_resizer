@@ -13,7 +13,6 @@
   
   <style>
     :root {
-      /* Dark Theme variables (Default) */
       --bg-primary: #0b0f19;
       --bg-secondary: #111827;
       --bg-tertiary: #1f2937;
@@ -29,58 +28,6 @@
       --font-display: 'Outfit', sans-serif;
       --font-body: 'Inter', sans-serif;
       --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      
-      /* Theme mappings */
-      --shadow-card: 0 4px 20px rgba(0,0,0,0.25);
-      --shadow-panel: 0 10px 30px rgba(0,0,0,0.3);
-      --header-bg: rgba(17, 24, 39, 0.8);
-      --header-border: var(--border);
-      --logo-icon-bg: linear-gradient(135deg, #8b5cf6, var(--accent));
-      --logo-icon-color: #ffffff;
-      --logo-icon-border: 1px solid transparent;
-      --logo-text-color: linear-gradient(to right, #ffffff, #a5b4fc);
-      --nav-active-bg: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
-      --nav-active-border: rgba(99, 102, 241, 0.4);
-      --nav-active-color: #ffffff;
-      --panel-h2-color: linear-gradient(to right, #ffffff, #c7d2fe);
-      --drop-zone-bg: rgba(31, 41, 55, 0.2);
-      --drop-zone-border: 2px dashed var(--border);
-      --drop-zone-icon-color: linear-gradient(135deg, #a78bfa, #818cf8);
-    }
-
-    :root[data-theme="light"] {
-      --bg-primary: #fbfbfc;
-      --bg-secondary: #ffffff;
-      --bg-tertiary: #f3f4f6;
-      --accent: #003c33;
-      --accent-hover: #002520;
-      --accent-glow: rgba(0, 60, 51, 0.08);
-      --text-primary: #212121;
-      --text-secondary: #75758a;
-      --border: #e5e7eb;
-      --success: #00c853;
-      --warning: #ff8f00;
-      --danger: #ef5350;
-      --font-display: 'Inter', 'Roboto', sans-serif;
-      --font-body: 'Inter', 'Roboto', sans-serif;
-      --transition: all 0.2s ease-in-out;
-      
-      /* Theme mappings */
-      --shadow-card: 0 4px 12px rgba(0,0,0,0.02);
-      --shadow-panel: 0 4px 12px rgba(0,0,0,0.02);
-      --header-bg: #ffffff;
-      --header-border: #e5e7eb;
-      --logo-icon-bg: rgba(0, 60, 51, 0.08);
-      --logo-icon-color: #003c33;
-      --logo-icon-border: 1px solid rgba(0, 60, 51, 0.2);
-      --logo-text-color: linear-gradient(to right, #003c33, #003c33);
-      --nav-active-bg: rgba(0, 60, 51, 0.06);
-      --nav-active-border: #003c33;
-      --nav-active-color: #003c33;
-      --panel-h2-color: linear-gradient(to right, #003c33, #003c33);
-      --drop-zone-bg: rgba(0, 60, 51, 0.02);
-      --drop-zone-border: 2px dashed #003c3333;
-      --drop-zone-icon-color: linear-gradient(to right, #003c33, #003c33);
     }
 
     * {
@@ -100,8 +47,9 @@
     }
 
     header {
-      background-color: var(--header-bg);
-      border-bottom: 1px solid var(--header-border);
+      background-color: rgba(17, 24, 39, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
       padding: 1rem 2rem;
       position: sticky;
       top: 0;
@@ -118,9 +66,7 @@
     }
 
     .logo-icon {
-      background: var(--logo-icon-bg);
-      color: var(--logo-icon-color);
-      border: var(--logo-icon-border);
+      background: linear-gradient(135deg, #8b5cf6, var(--accent));
       width: 2.5rem;
       height: 2.5rem;
       border-radius: 0.75rem;
@@ -129,20 +75,21 @@
       justify-content: center;
       font-size: 1.25rem;
       font-weight: 800;
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
     }
 
     .logo-text h1 {
       font-family: var(--font-display);
       font-size: 1.25rem;
       font-weight: 700;
-      background: var(--logo-text-color);
+      background: linear-gradient(to right, #ffffff, #a5b4fc);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
     .logo-text p {
       font-size: 0.75rem;
-      color: #75758a;
+      color: var(--text-secondary);
     }
 
     main {
@@ -169,7 +116,7 @@
       border: 1px solid var(--border);
       border-radius: 1rem;
       padding: 1.5rem;
-      box-shadow: var(--shadow-card);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
     }
 
     .nav-card h2 {
@@ -177,7 +124,7 @@
       font-size: 1rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: #75758a;
+      color: var(--text-secondary);
       margin-bottom: 1rem;
     }
 
@@ -190,7 +137,7 @@
       border: 1px solid transparent;
       padding: 1rem 1.25rem;
       border-radius: 0.75rem;
-      color: #75758a;
+      color: var(--text-secondary);
       font-size: 0.95rem;
       font-weight: 500;
       text-align: left;
@@ -204,9 +151,10 @@
     }
 
     .nav-btn.active {
-      color: var(--nav-active-color);
-      background: var(--nav-active-bg);
-      border-color: var(--nav-active-border);
+      color: #ffffff;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: inset 0 0 10px rgba(99, 102, 241, 0.1);
     }
 
     .nav-btn-icon {
@@ -228,7 +176,7 @@
       border: 1px solid var(--border);
       border-radius: 1.25rem;
       padding: 2rem;
-      box-shadow: var(--shadow-panel);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
       animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -243,7 +191,7 @@
 
     .panel-header {
       margin-bottom: 2rem;
-      border-bottom: 1px solid var(--header-border);
+      border-bottom: 1px solid var(--border);
       padding-bottom: 1rem;
     }
 
@@ -252,25 +200,25 @@
       font-size: 1.75rem;
       font-weight: 700;
       margin-bottom: 0.5rem;
-      background: var(--panel-h2-color);
+      background: linear-gradient(to right, #ffffff, #c7d2fe);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
     .panel-header p {
-      color: #75758a;
+      color: var(--text-secondary);
       font-size: 0.95rem;
       line-height: 1.5;
     }
 
     /* Drag and Drop Zone */
     .drop-zone {
-      border: var(--drop-zone-border);
+      border: 2px dashed var(--border);
       border-radius: 1rem;
       padding: 3rem 2rem;
       text-align: center;
       cursor: pointer;
-      background-color: var(--drop-zone-bg);
+      background-color: rgba(31, 41, 55, 0.2);
       transition: var(--transition);
       display: flex;
       flex-direction: column;
@@ -280,13 +228,13 @@
 
     .drop-zone:hover, .drop-zone.dragover {
       border-color: var(--accent);
-      background-color: var(--accent-glow);
-      box-shadow: 0 0 20px var(--accent-glow);
+      background-color: rgba(99, 102, 241, 0.05);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.1);
     }
 
     .drop-zone-icon {
       font-size: 3rem;
-      background: var(--drop-zone-icon-color);
+      background: linear-gradient(135deg, #a78bfa, #818cf8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -298,7 +246,7 @@
     }
 
     .drop-zone-text p {
-      color: #75758a;
+      color: var(--text-secondary);
       font-size: 0.85rem;
     }
 
@@ -337,7 +285,7 @@
       box-shadow: 0 8px 30px rgba(0,0,0,0.5);
       border-radius: 0.5rem;
       overflow: hidden;
-      background-color: var(--header-bg);
+      background-color: #ffffff;
       position: relative;
       touch-action: none;
     }
@@ -361,7 +309,7 @@
     .control-group label {
       font-size: 0.85rem;
       font-weight: 600;
-      color: #75758a;
+      color: var(--text-secondary);
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
@@ -545,7 +493,7 @@
 
     .batch-item-size {
       font-size: 0.75rem;
-      color: #75758a;
+      color: var(--text-secondary);
     }
 
     .batch-item-status {
@@ -553,7 +501,7 @@
       font-weight: 600;
     }
 
-    .status-pending { color: #75758a; }
+    .status-pending { color: var(--text-secondary); }
     .status-done { color: var(--success); }
 
     /* Footer styling */
@@ -562,9 +510,133 @@
       border-top: 1px solid var(--border);
       padding: 1.5rem 2rem;
       text-align: center;
-      color: #75758a;
+      color: var(--text-secondary);
       font-size: 0.85rem;
       margin-top: auto;
+    }
+
+    /* ==========================================
+       LIGHT THEME OVERRIDES
+       ========================================== */
+    html[data-theme="light"] {
+      --bg-primary: #fbfbfc;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #f3f4f6;
+      --accent: #003c33;
+      --accent-hover: #002520;
+      --accent-glow: rgba(0, 60, 51, 0.08);
+      --text-primary: #212121;
+      --text-secondary: #75758a;
+      --border: #e5e7eb;
+      --success: #00c853;
+      --warning: #ff8f00;
+      --danger: #ef5350;
+      --font-display: 'Inter', 'Roboto', sans-serif;
+      --font-body: 'Inter', 'Roboto', sans-serif;
+    }
+
+    html[data-theme="light"] body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    html[data-theme="light"] header {
+      background-color: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    html[data-theme="light"] .logo-icon {
+      background: rgba(0, 60, 51, 0.08);
+      color: #003c33;
+      border: 1px solid rgba(0, 60, 51, 0.2);
+      box-shadow: none;
+    }
+
+    html[data-theme="light"] .logo-text h1 {
+      background: none;
+      -webkit-background-clip: initial;
+      -webkit-text-fill-color: initial;
+      color: #003c33;
+    }
+
+    html[data-theme="light"] .logo-text p {
+      color: #75758a;
+    }
+
+    html[data-theme="light"] .nav-card {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    }
+
+    html[data-theme="light"] .nav-card h2 {
+      color: #75758a;
+    }
+
+    html[data-theme="light"] .nav-btn {
+      color: #75758a;
+    }
+
+    html[data-theme="light"] .nav-btn:hover {
+      color: var(--text-primary);
+      background-color: var(--bg-tertiary);
+    }
+
+    html[data-theme="light"] .nav-btn.active {
+      color: #003c33;
+      background: rgba(0, 60, 51, 0.06);
+      border-color: #003c33;
+      box-shadow: none;
+    }
+
+    html[data-theme="light"] .tool-panel {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+      border-radius: 8px;
+    }
+
+    html[data-theme="light"] .panel-header h2 {
+      background: none;
+      -webkit-background-clip: initial;
+      -webkit-text-fill-color: initial;
+      color: #003c33;
+    }
+
+    html[data-theme="light"] .panel-header p {
+      color: #75758a;
+    }
+
+    html[data-theme="light"] .drop-zone {
+      border: 2px dashed #003c3333;
+      border-radius: 0.75rem;
+      background-color: rgba(0, 60, 51, 0.02);
+    }
+
+    html[data-theme="light"] .drop-zone:hover, 
+    html[data-theme="light"] .drop-zone.dragover {
+      border-color: #003c33;
+      background-color: rgba(0, 60, 51, 0.05);
+      box-shadow: 0 0 20px rgba(0, 60, 51, 0.08);
+    }
+
+    html[data-theme="light"] .drop-zone-icon {
+      background: none;
+      -webkit-background-clip: initial;
+      -webkit-text-fill-color: initial;
+      color: #003c33;
+    }
+
+    html[data-theme="light"] .drop-zone-text p {
+      color: #75758a;
+    }
+
+    html[data-theme="light"] .status-info {
+      background-color: rgba(0, 60, 51, 0.04);
+      border-color: rgba(0, 60, 51, 0.1);
+      color: #003c33;
+    }
+
+    html[data-theme="light"] footer {
+      background-color: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      color: #75758a;
     }
   </style>
 </head>
@@ -578,7 +650,7 @@
         <p>Signature & Image Toolset</p>
       </div>
     </div>
-    <button id="theme-toggle" class="btn btn-secondary" onclick="toggleTheme()" style="padding: 0.5rem 1rem; font-size: 0.85rem; border-radius: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+    <button id="theme-toggle" class="btn btn-secondary" onclick="toggleTheme()" style="padding: 0.5rem 1rem; font-size: 0.85rem; border-radius: 0.5rem; display: flex; align-items: center; gap: 0.5rem; border: 1px solid var(--border);">
       ☀️ Light Mode
     </button>
   </header>
