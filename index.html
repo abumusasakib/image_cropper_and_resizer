@@ -13,21 +13,21 @@
   
   <style>
     :root {
-      --bg-primary: #0b0f19;
-      --bg-secondary: #111827;
-      --bg-tertiary: #1f2937;
-      --accent: #6366f1;
-      --accent-hover: #4f46e5;
-      --accent-glow: rgba(99, 102, 241, 0.15);
-      --text-primary: #f3f4f6;
-      --text-secondary: #9ca3af;
-      --border: #374151;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --font-display: 'Outfit', sans-serif;
-      --font-body: 'Inter', sans-serif;
-      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --bg-primary: #fbfbfc;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #f3f4f6;
+      --accent: #003c33;
+      --accent-hover: #002520;
+      --accent-glow: rgba(0, 60, 51, 0.08);
+      --text-primary: #212121;
+      --text-secondary: #75758a;
+      --border: #e5e7eb;
+      --success: #00c853;
+      --warning: #ff8f00;
+      --danger: #ef5350;
+      --font-display: 'Inter', 'Roboto', sans-serif;
+      --font-body: 'Inter', 'Roboto', sans-serif;
+      --transition: all 0.2s ease-in-out;
     }
 
     * {
@@ -47,9 +47,8 @@
     }
 
     header {
-      background-color: rgba(17, 24, 39, 0.8);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
+      background-color: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
       padding: 1rem 2rem;
       position: sticky;
       top: 0;
@@ -66,30 +65,29 @@
     }
 
     .logo-icon {
-      background: linear-gradient(135deg, #8b5cf6, var(--accent));
+      background: rgba(0, 60, 51, 0.08);
       width: 2.5rem;
       height: 2.5rem;
-      border-radius: 0.75rem;
+      border-radius: 0.5rem;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1.25rem;
       font-weight: 800;
-      box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+      color: #003c33;
+      border: 1px solid rgba(0, 60, 51, 0.2);
     }
 
     .logo-text h1 {
       font-family: var(--font-display);
       font-size: 1.25rem;
       font-weight: 700;
-      background: linear-gradient(to right, #ffffff, #a5b4fc);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #003c33;
     }
 
     .logo-text p {
       font-size: 0.75rem;
-      color: var(--text-secondary);
+      color: #75758a;
     }
 
     main {
@@ -114,9 +112,9 @@
     .nav-card {
       background-color: var(--bg-secondary);
       border: 1px solid var(--border);
-      border-radius: 1rem;
+      border-radius: 8px;
       padding: 1.5rem;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
     }
 
     .nav-card h2 {
@@ -124,7 +122,7 @@
       font-size: 1rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: var(--text-secondary);
+      color: #75758a;
       margin-bottom: 1rem;
     }
 
@@ -137,7 +135,7 @@
       border: 1px solid transparent;
       padding: 1rem 1.25rem;
       border-radius: 0.75rem;
-      color: var(--text-secondary);
+      color: #75758a;
       font-size: 0.95rem;
       font-weight: 500;
       text-align: left;
@@ -151,10 +149,10 @@
     }
 
     .nav-btn.active {
-      color: #ffffff;
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
-      border-color: rgba(99, 102, 241, 0.4);
-      box-shadow: inset 0 0 10px rgba(99, 102, 241, 0.1);
+      color: #003c33;
+      background-color: rgba(0, 60, 51, 0.06);
+      border-color: #003c33;
+      font-weight: 600;
     }
 
     .nav-btn-icon {
@@ -174,9 +172,9 @@
       display: none;
       background-color: var(--bg-secondary);
       border: 1px solid var(--border);
-      border-radius: 1.25rem;
-      padding: 2rem;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      border-radius: 8px;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
       animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -200,25 +198,23 @@
       font-size: 1.75rem;
       font-weight: 700;
       margin-bottom: 0.5rem;
-      background: linear-gradient(to right, #ffffff, #c7d2fe);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #003c33;
     }
 
     .panel-header p {
-      color: var(--text-secondary);
+      color: #75758a;
       font-size: 0.95rem;
       line-height: 1.5;
     }
 
     /* Drag and Drop Zone */
     .drop-zone {
-      border: 2px dashed var(--border);
-      border-radius: 1rem;
+      border: 2px dashed #003c3333;
+      border-radius: 0.75rem;
       padding: 3rem 2rem;
       text-align: center;
       cursor: pointer;
-      background-color: rgba(31, 41, 55, 0.2);
+      background-color: rgba(0, 60, 51, 0.02);
       transition: var(--transition);
       display: flex;
       flex-direction: column;
@@ -227,16 +223,14 @@
     }
 
     .drop-zone:hover, .drop-zone.dragover {
-      border-color: var(--accent);
-      background-color: rgba(99, 102, 241, 0.05);
-      box-shadow: 0 0 20px rgba(99, 102, 241, 0.1);
+      border-color: #003c33;
+      background-color: rgba(0, 60, 51, 0.05);
+      box-shadow: 0 0 20px rgba(0, 60, 51, 0.08);
     }
 
     .drop-zone-icon {
       font-size: 3rem;
-      background: linear-gradient(135deg, #a78bfa, #818cf8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #003c33;
     }
 
     .drop-zone-text h3 {
@@ -246,7 +240,7 @@
     }
 
     .drop-zone-text p {
-      color: var(--text-secondary);
+      color: #75758a;
       font-size: 0.85rem;
     }
 
@@ -309,7 +303,7 @@
     .control-group label {
       font-size: 0.85rem;
       font-weight: 600;
-      color: var(--text-secondary);
+      color: #75758a;
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
@@ -493,7 +487,7 @@
 
     .batch-item-size {
       font-size: 0.75rem;
-      color: var(--text-secondary);
+      color: #75758a;
     }
 
     .batch-item-status {
@@ -501,7 +495,7 @@
       font-weight: 600;
     }
 
-    .status-pending { color: var(--text-secondary); }
+    .status-pending { color: #75758a; }
     .status-done { color: var(--success); }
 
     /* Footer styling */
@@ -510,7 +504,7 @@
       border-top: 1px solid var(--border);
       padding: 1.5rem 2rem;
       text-align: center;
-      color: var(--text-secondary);
+      color: #75758a;
       font-size: 0.85rem;
       margin-top: auto;
     }
