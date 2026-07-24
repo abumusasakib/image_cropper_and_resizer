@@ -13,6 +13,42 @@
   
   <style>
     :root {
+      /* Dark Theme variables (Default) */
+      --bg-primary: #0b0f19;
+      --bg-secondary: #111827;
+      --bg-tertiary: #1f2937;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --accent-glow: rgba(99, 102, 241, 0.15);
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
+      --border: #374151;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --font-display: 'Outfit', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      /* Theme mappings */
+      --shadow-card: 0 4px 20px rgba(0,0,0,0.25);
+      --shadow-panel: 0 10px 30px rgba(0,0,0,0.3);
+      --header-bg: rgba(17, 24, 39, 0.8);
+      --header-border: var(--border);
+      --logo-icon-bg: linear-gradient(135deg, #8b5cf6, var(--accent));
+      --logo-icon-color: #ffffff;
+      --logo-icon-border: 1px solid transparent;
+      --logo-text-color: linear-gradient(to right, #ffffff, #a5b4fc);
+      --nav-active-bg: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+      --nav-active-border: rgba(99, 102, 241, 0.4);
+      --nav-active-color: #ffffff;
+      --panel-h2-color: linear-gradient(to right, #ffffff, #c7d2fe);
+      --drop-zone-bg: rgba(31, 41, 55, 0.2);
+      --drop-zone-border: 2px dashed var(--border);
+      --drop-zone-icon-color: linear-gradient(135deg, #a78bfa, #818cf8);
+    }
+
+    :root[data-theme="light"] {
       --bg-primary: #fbfbfc;
       --bg-secondary: #ffffff;
       --bg-tertiary: #f3f4f6;
@@ -28,6 +64,23 @@
       --font-display: 'Inter', 'Roboto', sans-serif;
       --font-body: 'Inter', 'Roboto', sans-serif;
       --transition: all 0.2s ease-in-out;
+      
+      /* Theme mappings */
+      --shadow-card: 0 4px 12px rgba(0,0,0,0.02);
+      --shadow-panel: 0 4px 12px rgba(0,0,0,0.02);
+      --header-bg: #ffffff;
+      --header-border: #e5e7eb;
+      --logo-icon-bg: rgba(0, 60, 51, 0.08);
+      --logo-icon-color: #003c33;
+      --logo-icon-border: 1px solid rgba(0, 60, 51, 0.2);
+      --logo-text-color: linear-gradient(to right, #003c33, #003c33);
+      --nav-active-bg: rgba(0, 60, 51, 0.06);
+      --nav-active-border: #003c33;
+      --nav-active-color: #003c33;
+      --panel-h2-color: linear-gradient(to right, #003c33, #003c33);
+      --drop-zone-bg: rgba(0, 60, 51, 0.02);
+      --drop-zone-border: 2px dashed #003c3333;
+      --drop-zone-icon-color: linear-gradient(to right, #003c33, #003c33);
     }
 
     * {
@@ -47,8 +100,8 @@
     }
 
     header {
-      background-color: #ffffff;
-      border-bottom: 1px solid #e5e7eb;
+      background-color: var(--header-bg);
+      border-bottom: 1px solid var(--header-border);
       padding: 1rem 2rem;
       position: sticky;
       top: 0;
@@ -65,24 +118,26 @@
     }
 
     .logo-icon {
-      background: rgba(0, 60, 51, 0.08);
+      background: var(--logo-icon-bg);
+      color: var(--logo-icon-color);
+      border: var(--logo-icon-border);
       width: 2.5rem;
       height: 2.5rem;
-      border-radius: 0.5rem;
+      border-radius: 0.75rem;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1.25rem;
       font-weight: 800;
-      color: #003c33;
-      border: 1px solid rgba(0, 60, 51, 0.2);
     }
 
     .logo-text h1 {
       font-family: var(--font-display);
       font-size: 1.25rem;
       font-weight: 700;
-      color: #003c33;
+      background: var(--logo-text-color);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .logo-text p {
@@ -112,9 +167,9 @@
     .nav-card {
       background-color: var(--bg-secondary);
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: 1rem;
       padding: 1.5rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+      box-shadow: var(--shadow-card);
     }
 
     .nav-card h2 {
@@ -149,10 +204,9 @@
     }
 
     .nav-btn.active {
-      color: #003c33;
-      background-color: rgba(0, 60, 51, 0.06);
-      border-color: #003c33;
-      font-weight: 600;
+      color: var(--nav-active-color);
+      background: var(--nav-active-bg);
+      border-color: var(--nav-active-border);
     }
 
     .nav-btn-icon {
@@ -172,9 +226,9 @@
       display: none;
       background-color: var(--bg-secondary);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 2.5rem 2rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+      border-radius: 1.25rem;
+      padding: 2rem;
+      box-shadow: var(--shadow-panel);
       animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -198,7 +252,9 @@
       font-size: 1.75rem;
       font-weight: 700;
       margin-bottom: 0.5rem;
-      color: #003c33;
+      background: var(--panel-h2-color);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .panel-header p {
@@ -209,12 +265,12 @@
 
     /* Drag and Drop Zone */
     .drop-zone {
-      border: 2px dashed #003c3333;
-      border-radius: 0.75rem;
+      border: var(--drop-zone-border);
+      border-radius: 1rem;
       padding: 3rem 2rem;
       text-align: center;
       cursor: pointer;
-      background-color: rgba(0, 60, 51, 0.02);
+      background-color: var(--drop-zone-bg);
       transition: var(--transition);
       display: flex;
       flex-direction: column;
@@ -223,14 +279,16 @@
     }
 
     .drop-zone:hover, .drop-zone.dragover {
-      border-color: #003c33;
-      background-color: rgba(0, 60, 51, 0.05);
-      box-shadow: 0 0 20px rgba(0, 60, 51, 0.08);
+      border-color: var(--accent);
+      background-color: var(--accent-glow);
+      box-shadow: 0 0 20px var(--accent-glow);
     }
 
     .drop-zone-icon {
       font-size: 3rem;
-      color: #003c33;
+      background: var(--drop-zone-icon-color);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .drop-zone-text h3 {
@@ -279,7 +337,7 @@
       box-shadow: 0 8px 30px rgba(0,0,0,0.5);
       border-radius: 0.5rem;
       overflow: hidden;
-      background-color: #ffffff;
+      background-color: var(--header-bg);
       position: relative;
       touch-action: none;
     }
