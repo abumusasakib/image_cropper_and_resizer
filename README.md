@@ -81,4 +81,4 @@ Because **SigForge (`index.html`)** runs entirely on client-side JavaScript:
 1. Push this repository to GitHub.
 2. Go to **Settings > Pages** in your GitHub repository.
 3. Select the branch (e.g., `main`) and root folder (`/`), then click **Save**.
-4. Your application will be live at: `https://<your-username>.github.io/<repository-name>/`
+4. Your application will be live at: `https://abumusasakib.github.io/image_cropper_and_resizer/`
