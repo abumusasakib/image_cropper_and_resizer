@@ -103,7 +103,10 @@ class ImageResizer:
                                 justify=tk.CENTER, font=("Arial", 12, "italic"), fill="#888888")
 
     def show_image(self):
-        self.pil_image = self.image.convert("RGB")
+        if self.image.mode in ('RGBA', 'LA') or (self.image.mode == 'P' and 'transparency' in self.image.info):
+            self.pil_image = self.image.convert("RGBA")
+        else:
+            self.pil_image = self.image.convert("RGB")
 
         # Resize image to fit canvas
         self.canvas_width = self.canvas.winfo_width()
@@ -138,7 +141,10 @@ class ImageResizer:
 
         apply_padding = False
         if width != -1 and height != -1:
-            apply_padding = messagebox.askyesno("Padding", "Would you like to add white padding (letterbox/pillarbox) to fit the image to the exact dimensions while preserving aspect ratio?")
+            if self.pil_image.mode == "RGBA":
+                apply_padding = messagebox.askyesno("Padding", "Would you like to add transparent padding (letterbox/pillarbox) to fit the image to the exact dimensions while preserving aspect ratio?")
+            else:
+                apply_padding = messagebox.askyesno("Padding", "Would you like to add white padding (letterbox/pillarbox) to fit the image to the exact dimensions while preserving aspect ratio?")
 
         min_file_size = simpledialog.askinteger("Input", "Enter the minimum file size (in KB, 0 for no limit):",
                                                 initialvalue=self.default_min_size // 1024, minvalue=0)
@@ -182,43 +188,95 @@ class ImageResizer:
             fit_img = self.pil_image.resize((new_w, new_h))
             
             if apply_padding:
-                # Create a new white background image of the exact target size
-                resized_image_pil = Image.new("RGB", (width, height), (255, 255, 255))
-                # Center the fit image onto the background
-                paste_x = (width - new_w) // 2
-                paste_y = (height - new_h) // 2
-                resized_image_pil.paste(fit_img, (paste_x, paste_y))
+                if self.pil_image.mode == "RGBA":
+                    # Create transparent background
+                    resized_image_pil = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+                    # Center the fit image onto the background
+                    paste_x = (width - new_w) // 2
+                    paste_y = (height - new_h) // 2
+                    resized_image_pil.paste(fit_img, (paste_x, paste_y), fit_img)
+                else:
+                    # Create a new white background image of the exact target size
+                    resized_image_pil = Image.new("RGB", (width, height), (255, 255, 255))
+                    # Center the fit image onto the background
+                    paste_x = (width - new_w) // 2
+                    paste_y = (height - new_h) // 2
+                    resized_image_pil.paste(fit_img, (paste_x, paste_y))
             else:
                 resized_image_pil = fit_img
                 # Update width/height to the actual resized dimensions for status message
                 width, height = new_w, new_h
 
-        # Save the image ensuring it stays within the file size limits
-        quality = 95
+        # Determine output format and file path
+        is_png = (self.pil_image.mode == "RGBA")
+        default_ext = ".png" if is_png else ".jpg"
+        file_types = [("PNG files", "*.png"), ("JPEG files", "*.jpg")] if is_png else [("JPEG files", "*.jpg"), ("PNG files", "*.png")]
+        
+        file_path = filedialog.asksaveasfilename(defaultextension=default_ext, filetypes=file_types)
+        if not file_path:
+            self.show_loading("")
+            return
+
+        save_format = "PNG" if file_path.lower().endswith(".png") else "JPEG"
+        
+        # Prepare image for saving
+        save_image_pil = resized_image_pil
+        if save_format == "JPEG" and save_image_pil.mode == "RGBA":
+            # Paste onto white background to discard transparency cleanly
+            bg = Image.new("RGB", save_image_pil.size, (255, 255, 255))
+            bg.paste(save_image_pil, (0, 0), save_image_pil)
+            save_image_pil = bg
+
+        # Save logic based on format and size constraints
         success = False
-        file_path = None
+        if save_format == "JPEG":
+            quality = 95
+            if min_file_size == 0 and max_file_size == 0:
+                try:
+                    save_image_pil.save(file_path, format="JPEG", quality=quality)
+                    success = True
+                except Exception as e:
+                    messagebox.showerror("Error", f"Could not save image: {e}")
+            else:
+                while True:
+                    with io.BytesIO() as buffer:
+                        save_image_pil.save(buffer, format="JPEG", quality=quality)
+                        size = buffer.tell()
+                        if min_file_size <= size <= max_file_size or quality <= 10:
+                            try:
+                                save_image_pil.save(file_path, format="JPEG", quality=quality)
+                                success = True
+                            except Exception as e:
+                                messagebox.showerror("Error", f"Could not save image: {e}")
+                            break
+                        quality = quality - 5 if size > max_file_size else quality + 5
+        else:  # PNG format
+            if min_file_size == 0 and max_file_size == 0:
+                try:
+                    save_image_pil.save(file_path, format="PNG", optimize=True)
+                    success = True
+                except Exception as e:
+                    messagebox.showerror("Error", f"Could not save image: {e}")
+            else:
+                # PNG is lossless, size constraint cannot be met with 'quality'.
+                # We save with maximum optimization first.
+                try:
+                    save_image_pil.save(file_path, format="PNG", optimize=True)
+                    size = os.path.getsize(file_path)
+                    if min_file_size <= size <= max_file_size:
+                        success = True
+                    else:
+                        messagebox.showwarning(
+                            "Size Constraint Warning",
+                            f"Saved PNG size is {size // 1024} KB, which does not fit in the "
+                            f"specified limits ({min_file_size // 1024} - {max_file_size // 1024} KB). "
+                            "Lossless PNG cannot be compressed to arbitrary sizes."
+                        )
+                        success = True  # Still count as success as it is saved
+                except Exception as e:
+                    messagebox.showerror("Error", f"Could not save image: {e}")
 
-        if min_file_size == 0 and max_file_size == 0:
-            file_path = filedialog.asksaveasfilename(defaultextension=".jpg", filetypes=[("JPEG files", "*.jpg")])
-            if file_path:
-                resized_image_pil.save(file_path, format="JPEG", quality=quality)
-                messagebox.showinfo("Success", f"Image resized to {width}x{height} and saved successfully.")
-                success = True
-        else:
-            while True:
-                with io.BytesIO() as buffer:
-                    resized_image_pil.save(buffer, format="JPEG", quality=quality)
-                    size = buffer.tell()
-                    if min_file_size <= size <= max_file_size or quality <= 10:
-                        file_path = filedialog.asksaveasfilename(defaultextension=".jpg", filetypes=[("JPEG files", "*.jpg")])
-                        if file_path:
-                            resized_image_pil.save(file_path, format="JPEG", quality=quality)
-                            messagebox.showinfo("Success", f"Image resized to {width}x{height} and saved successfully.")
-                            success = True
-                        break
-                    quality = quality - 5 if size > max_file_size else quality + 5
-
-        # Notify if saving failed
+        # Notify if saving failed and not cancelled
         if not success:
             messagebox.showerror("Error", "Failed to save the image within the specified size constraints.")
         else:

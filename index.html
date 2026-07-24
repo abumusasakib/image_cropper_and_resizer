@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SigForge | Signature & Image Toolset</title>
+  <!-- Custom SVG Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2230%22 fill=%22%236366f1%22/><text x=%2250%22 y=%2268%22 font-size=%2255%22 font-family=%22Outfit, sans-serif%22 font-weight=%2280%22 fill=%22white%22 text-anchor=%22middle%22>SF</text></svg>">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-secondary: #111827;
+      --bg-tertiary: #1f2937;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --accent-glow: rgba(99, 102, 241, 0.15);
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
+      --border: #374151;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --font-display: 'Outfit', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    header {
+      background-color: rgba(17, 24, 39, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-icon {
+      background: linear-gradient(135deg, #8b5cf6, var(--accent));
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      font-weight: 800;
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+    }
+
+    .logo-text h1 {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: linear-gradient(to right, #ffffff, #a5b4fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo-text p {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem;
+      gap: 2rem;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: 280px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .nav-card {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    }
+
+    .nav-card h2 {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    .nav-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: transparent;
+      border: 1px solid transparent;
+      padding: 1rem 1.25rem;
+      border-radius: 0.75rem;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      font-weight: 500;
+      text-align: left;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .nav-btn:hover {
+      color: var(--text-primary);
+      background-color: var(--bg-tertiary);
+    }
+
+    .nav-btn.active {
+      color: #ffffff;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: inset 0 0 10px rgba(99, 102, 241, 0.1);
+    }
+
+    .nav-btn-icon {
+      font-size: 1.25rem;
+    }
+
+    /* Content Area */
+    .content-area {
+      flex: 1;
+      min-width: 0; /* Prevents flex items from overflowing */
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .tool-panel {
+      display: none;
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 1.25rem;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .tool-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel-header {
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1rem;
+    }
+
+    .panel-header h2 {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(to right, #ffffff, #c7d2fe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .panel-header p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    /* Drag and Drop Zone */
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: 1rem;
+      padding: 3rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      background-color: rgba(31, 41, 55, 0.2);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: var(--accent);
+      background-color: rgba(99, 102, 241, 0.05);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.1);
+    }
+
+    .drop-zone-icon {
+      font-size: 3rem;
+      background: linear-gradient(135deg, #a78bfa, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .drop-zone-text h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .drop-zone-text p {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    /* Interactive Interface when file loaded */
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 2rem;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 1024px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .preview-container {
+      background-color: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 380px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .preview-canvas-wrapper {
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+      border-radius: 0.5rem;
+      overflow: hidden;
+      background-color: #ffffff;
+      position: relative;
+      touch-action: none;
+    }
+
+    canvas {
+      display: block;
+    }
+
+    .controls-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .control-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent);
+      height: 6px;
+      border-radius: 3px;
+      background-color: var(--bg-tertiary);
+      outline: none;
+    }
+
+    .slider-val {
+      font-size: 0.9rem;
+      font-family: monospace;
+      min-width: 3rem;
+      text-align: right;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background-color: var(--accent);
+      color: #ffffff;
+      border: none;
+      padding: 0.85rem 1.5rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background-color: var(--accent-hover);
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-secondary {
+      background-color: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+    }
+
+    .btn-secondary:hover {
+      background-color: rgba(255,255,255,0.05);
+      box-shadow: none;
+    }
+
+    .btn-danger {
+      background-color: var(--danger);
+    }
+
+    .btn-danger:hover {
+      background-color: #dc2626;
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none !important;
+    }
+
+    /* Dimensions Inputs */
+    .dimension-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .input-field {
+      background-color: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      width: 100%;
+      transition: var(--transition);
+    }
+
+    .input-field:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    /* Status Box */
+    .status-box {
+      border-radius: 0.75rem;
+      padding: 1rem;
+      font-size: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      border: 1px solid transparent;
+    }
+
+    .status-info {
+      background-color: rgba(99, 102, 241, 0.1);
+      border-color: rgba(99, 102, 241, 0.3);
+      color: #a5b4fc;
+    }
+
+    .status-success {
+      background-color: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.3);
+      color: #6ee7b7;
+    }
+
+    .status-warning {
+      background-color: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.3);
+      color: #fcd34d;
+    }
+
+    /* Custom Selection for Resizer */
+    .select-field {
+      background-color: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    /* Batch list styles */
+    .batch-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      max-height: 300px;
+      overflow-y: auto;
+      margin-top: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 0.75rem;
+      background-color: rgba(0,0,0,0.1);
+    }
+
+    .batch-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: var(--bg-tertiary);
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid var(--border);
+    }
+
+    .batch-item-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .batch-item-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+      max-width: 250px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .batch-item-size {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .batch-item-status {
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .status-pending { color: var(--text-secondary); }
+    .status-done { color: var(--success); }
+
+    /* Footer styling */
+    footer {
+      background-color: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-container">
+      <div class="logo-icon">✨</div>
+      <div class="logo-text">
+        <h1>SigForge</h1>
+        <p>Signature & Image Toolset</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Left Navigation Sidebar -->
+    <div class="sidebar">
+      <div class="nav-card">
+        <h2>Utilities</h2>
+        <button class="nav-btn active" onclick="switchPanel('sig-processor')">
+          <span class="nav-btn-icon">🖋️</span> Signature Processor
+        </button>
+        <button class="nav-btn" onclick="switchPanel('image-resizer')">
+          <span class="nav-btn-icon">📐</span> Image Resizer
+        </button>
+        <button class="nav-btn" onclick="switchPanel('image-cropper')">
+          <span class="nav-btn-icon">✂️</span> Custom Cropper
+        </button>
+        <button class="nav-btn" onclick="switchPanel('batch-resizer')">
+          <span class="nav-btn-icon">📦</span> Batch Resizer
+        </button>
+      </div>
+    </div>
+
+    <!-- Right Panels Container -->
+    <div class="content-area">
+      
+      <!-- 1. Signature Processor -->
+      <div id="sig-processor" class="tool-panel active">
+        <div class="panel-header">
+          <h2>Signature Processor</h2>
+          <p>Centers your signature on a square 600x600 canvas with solid white padding, keeping it within optimal portal size constraints (3 KB - 60 KB).</p>
+        </div>
+        
+        <div id="sig-drop-zone" class="drop-zone" onclick="document.getElementById('sig-file').click()">
+          <div class="drop-zone-icon">📁</div>
+          <div class="drop-zone-text">
+            <h3>Drag & Drop Signature Image Here</h3>
+            <p>Supports PNG, JPG, JPEG, BMP</p>
+          </div>
+          <input type="file" id="sig-file" class="file-input" accept="image/*" onchange="loadSignature(event)">
+        </div>
+
+        <div id="sig-workspace" class="workspace" style="display:none;">
+          <div class="preview-container">
+            <div class="preview-canvas-wrapper" style="width: 300px; height: 300px;">
+              <canvas id="sig-canvas" width="300" height="300"></canvas>
+            </div>
+          </div>
+          <div class="controls-panel">
+            <div class="control-group">
+              <label>Zoom Signature</label>
+              <div class="slider-row">
+                <input type="range" id="sig-zoom" min="0.1" max="3" step="0.05" value="1" oninput="updateSigCanvas()">
+                <span id="sig-zoom-val" class="slider-val">1.00x</span>
+              </div>
+            </div>
+            
+            <div class="status-box status-info">
+              💡 <strong>Interactive Pan</strong>: Click and drag your signature directly on the preview to adjust its position.
+            </div>
+
+            <div class="status-box status-success" id="sig-size-status">
+              Estimated file size is checking...
+            </div>
+
+            <button class="btn btn-secondary" onclick="resetSigView()">Reset View</button>
+            <button class="btn" onclick="saveSignature()">Save Processed Signature</button>
+            <button class="btn btn-secondary btn-danger" onclick="unloadSignature()">Clear Image</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Image Resizer -->
+      <div id="image-resizer" class="tool-panel">
+        <div class="panel-header">
+          <h2>Image Resizer</h2>
+          <p>Resize images to target dimensions with options for white/transparent letterboxing or pillarboxing.</p>
+        </div>
+
+        <div id="resizer-drop-zone" class="drop-zone" onclick="document.getElementById('resizer-file').click()">
+          <div class="drop-zone-icon">📁</div>
+          <div class="drop-zone-text">
+            <h3>Drag & Drop Image Here</h3>
+            <p>Supports PNG, JPG, JPEG, BMP</p>
+          </div>
+          <input type="file" id="resizer-file" class="file-input" accept="image/*" onchange="loadResizer(event)">
+        </div>
+
+        <div id="resizer-workspace" class="workspace" style="display:none;">
+          <div class="preview-container">
+            <div class="preview-canvas-wrapper" id="resizer-canvas-wrapper" style="max-width: 100%; max-height: 100%;">
+              <canvas id="resizer-canvas"></canvas>
+            </div>
+          </div>
+          <div class="controls-panel">
+            <div class="dimension-grid">
+              <div class="control-group">
+                <label>Width (px)</label>
+                <input type="number" id="resizer-width" class="input-field" value="300" oninput="onResizerDimChange('w')">
+              </div>
+              <div class="control-group">
+                <label>Height (px)</label>
+                <input type="number" id="resizer-height" class="input-field" value="80" oninput="onResizerDimChange('h')">
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label>Padding Option</label>
+              <select id="resizer-padding" class="select-field" onchange="updateResizerCanvas()">
+                <option value="none">Fit Aspect Ratio (No Padding)</option>
+                <option value="white">White Padding (Letterbox/Pillarbox)</option>
+                <option value="transparent">Transparent Padding</option>
+              </select>
+            </div>
+
+            <div class="control-group">
+              <label>Min Size Limit (KB)</label>
+              <input type="number" id="resizer-min-size" class="input-field" value="3">
+            </div>
+
+            <div class="control-group">
+              <label>Max Size Limit (KB)</label>
+              <input type="number" id="resizer-max-size" class="input-field" value="60">
+            </div>
+
+            <button class="btn" onclick="saveResizedImage()">Save Resized Image</button>
+            <button class="btn btn-secondary btn-danger" onclick="unloadResizer()">Clear Image</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Custom Cropper -->
+      <div id="image-cropper" class="tool-panel">
+        <div class="panel-header">
+          <h2>Custom Image Cropper</h2>
+          <p>Interactively select, adjust, and crop any region of your signature image.</p>
+        </div>
+
+        <div id="cropper-drop-zone" class="drop-zone" onclick="document.getElementById('cropper-file').click()">
+          <div class="drop-zone-icon">📁</div>
+          <div class="drop-zone-text">
+            <h3>Drag & Drop Image Here</h3>
+            <p>Supports PNG, JPG, JPEG, BMP</p>
+          </div>
+          <input type="file" id="cropper-file" class="file-input" accept="image/*" onchange="loadCropper(event)">
+        </div>
+
+        <div id="cropper-workspace" class="workspace" style="display:none;">
+          <div class="preview-container" style="cursor: crosshair;">
+            <canvas id="cropper-canvas" onmousedown="startCropSelect(event)" onmousemove="cropSelecting(event)" onmouseup="endCropSelect(event)"></canvas>
+          </div>
+          <div class="controls-panel">
+            <div class="status-box status-info">
+              💡 <strong>How to Crop</strong>: Click and drag your cursor over the preview canvas on the left to draw a crop rectangle.
+            </div>
+            <button class="btn" id="crop-btn" disabled onclick="saveCroppedImage()">Crop & Save Selection</button>
+            <button class="btn btn-secondary" onclick="resetCropperSelection()">Reset Crop Box</button>
+            <button class="btn btn-secondary btn-danger" onclick="unloadCropper()">Clear Image</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Batch Resizer -->
+      <div id="batch-resizer" class="tool-panel">
+        <div class="panel-header">
+          <h2>Batch Image Resizer</h2>
+          <p>Select multiple images to batch resize them to standard portal dimensions.</p>
+        </div>
+
+        <div class="drop-zone" onclick="document.getElementById('batch-files').click()">
+          <div class="drop-zone-icon">📁</div>
+          <div class="drop-zone-text">
+            <h3>Select Multiple Images</h3>
+            <p>Supports PNG, JPG, JPEG</p>
+          </div>
+          <input type="file" id="batch-files" class="file-input" accept="image/*" multiple onchange="loadBatchImages(event)">
+        </div>
+
+        <div id="batch-workspace" style="display:none; margin-top: 1.5rem;">
+          <div class="control-group">
+            <label>Select Target Dimension Preset</label>
+            <select id="batch-dimension" class="select-field">
+              <option value="300x80">300 x 80 (Signature Default)</option>
+              <option value="300x300">300 x 300 (Profile Photo Default)</option>
+              <option value="1242x2688">1242 x 2688 (Mobile Screenshot Preset)</option>
+            </select>
+          </div>
+
+          <div class="batch-list" id="batch-list-container">
+            <!-- Loaded batch files go here -->
+          </div>
+
+          <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+            <button class="btn" onclick="processBatch()">Process & Download Batch</button>
+            <button class="btn btn-secondary btn-danger" onclick="clearBatch()">Clear All</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 SigForge Signature & Image Toolset. Running client-side via HTML5 canvas.</p>
+  </footer>
+
+  <script>
+    // Tab switching logic
+    function switchPanel(panelId) {
+      document.querySelectorAll('.tool-panel').forEach(panel => {
+        panel.classList.remove('active');
+      });
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      document.getElementById(panelId).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+
+    // ==========================================
+    // 1. DU SIGNATURE PROCESSOR LOGIC
+    // ==========================================
+    let sigImage = null;
+    let sigPanX = 0;
+    let sigPanY = 0;
+    let isSigDragging = false;
+    let sigStartX = 0;
+    let sigStartY = 0;
+
+    const sigCanvas = document.getElementById('sig-canvas');
+    const sigCtx = sigCanvas.getContext('2d');
+    const sigZoomInput = document.getElementById('sig-zoom');
+
+    // Drag events on signature canvas
+    sigCanvas.addEventListener('mousedown', (e) => {
+      if (!sigImage) return;
+      isSigDragging = true;
+      sigStartX = e.clientX;
+      sigStartY = e.clientY;
+    });
+
+    window.addEventListener('mouseup', () => {
+      isSigDragging = false;
+    });
+
+    sigCanvas.addEventListener('mousemove', (e) => {
+      if (!isSigDragging || !sigImage) return;
+      const dx = e.clientX - sigStartX;
+      const dy = e.clientY - sigStartY;
+      sigPanX += dx;
+      sigPanY += dy;
+      sigStartX = e.clientX;
+      sigStartY = e.clientY;
+      updateSigCanvas();
+    });
+
+    function loadSignature(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        sigImage = new Image();
+        sigImage.onload = function() {
+          document.getElementById('sig-drop-zone').style.display = 'none';
+          document.getElementById('sig-workspace').style.display = 'grid';
+          resetSigView();
+        };
+        sigImage.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function unloadSignature() {
+      sigImage = null;
+      document.getElementById('sig-file').value = '';
+      document.getElementById('sig-drop-zone').style.display = 'flex';
+      document.getElementById('sig-workspace').style.display = 'none';
+    }
+
+    function resetSigView() {
+      sigPanX = 0;
+      sigPanY = 0;
+      sigZoomInput.value = 1;
+      updateSigCanvas();
+    }
+
+    function updateSigCanvas() {
+      if (!sigImage) return;
+
+      const zoom = parseFloat(sigZoomInput.value);
+      document.getElementById('sig-zoom-val').textContent = zoom.toFixed(2) + 'x';
+
+      // Clear canvas
+      sigCtx.fillStyle = '#ffffff';
+      sigCtx.fillRect(0, 0, 300, 300);
+
+      // Math representing 600x600 but scaled 2x down to 300x300 preview
+      const maxW = 200; // 400 scaled 2x down
+      const maxH = 90;  // 180 scaled 2x down
+
+      const origW = sigImage.width;
+      const origH = sigImage.height;
+
+      const baseScale = Math.min(maxW / origW, maxH / origH);
+      const displayScale = baseScale * zoom;
+
+      const newW = origW * displayScale;
+      const newH = origH * displayScale;
+
+      const pasteX = (300 - newW) / 2 + sigPanX;
+      const pasteY = (300 - newH) / 2 + sigPanY;
+
+      sigCtx.drawImage(sigImage, pasteX, pasteY, newW, newH);
+
+      // Bounding box border
+      sigCtx.strokeStyle = '#dddddd';
+      sigCtx.lineWidth = 1;
+      sigCtx.strokeRect(0, 0, 300, 300);
+
+      // Estimate file size client-side
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = 600;
+      tempCanvas.height = 600;
+      const tempCtx = tempCanvas.getContext('2d');
+
+      tempCtx.fillStyle = '#ffffff';
+      tempCtx.fillRect(0, 0, 600, 600);
+
+      const finalScale = Math.min(400 / origW, 180 / origH) * zoom;
+      const finalW = origW * finalScale;
+      const finalH = origH * finalScale;
+      const finalPasteX = (600 - finalW) / 2 + (sigPanX * 2);
+      const finalPasteY = (600 - finalH) / 2 + (sigPanY * 2);
+
+      tempCtx.drawImage(sigImage, finalPasteX, finalPasteY, finalW, finalH);
+
+      tempCanvas.toBlob(function(blob) {
+        const kb = blob.size / 1024;
+        const statusBox = document.getElementById('sig-size-status');
+        statusBox.textContent = `Estimated File Size: ${kb.toFixed(2)} KB`;
+        
+        if (kb >= 3 && kb <= 60) {
+          statusBox.className = 'status-box status-success';
+          statusBox.innerHTML = `✅ Size: <strong>${kb.toFixed(2)} KB</strong> (Fits 3 KB - 60 KB requirements)`;
+        } else {
+          statusBox.className = 'status-box status-warning';
+          statusBox.innerHTML = `⚠️ Size: <strong>${kb.toFixed(2)} KB</strong> (DU portal limit is 3 KB - 60 KB)`;
+        }
+      }, 'image/png');
+    }
+
+    function saveSignature() {
+      if (!sigImage) return;
+
+      const zoom = parseFloat(sigZoomInput.value);
+
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = 600;
+      tempCanvas.height = 600;
+      const tempCtx = tempCanvas.getContext('2d');
+
+      tempCtx.fillStyle = '#ffffff';
+      tempCtx.fillRect(0, 0, 600, 600);
+
+      const finalScale = Math.min(400 / sigImage.width, 180 / sigImage.height) * zoom;
+      const finalW = sigImage.width * finalScale;
+      const finalH = sigImage.height * finalScale;
+      const finalPasteX = (600 - finalW) / 2 + (sigPanX * 2);
+      const finalPasteY = (600 - finalH) / 2 + (sigPanY * 2);
+
+      tempCtx.drawImage(sigImage, finalPasteX, finalPasteY, finalW, finalH);
+
+      const link = document.createElement('a');
+      link.download = 'signature_processed.png';
+      link.href = tempCanvas.toDataURL('image/png');
+      link.click();
+    }
+
+
+    // ==========================================
+    // 2. IMAGE RESIZER LOGIC
+    // ==========================================
+    let resizerImage = null;
+    const resizerCanvas = document.getElementById('resizer-canvas');
+    const resizerCtx = resizerCanvas.getContext('2d');
+
+    function loadResizer(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        resizerImage = new Image();
+        resizerImage.onload = function() {
+          document.getElementById('resizer-drop-zone').style.display = 'none';
+          document.getElementById('resizer-workspace').style.display = 'grid';
+          document.getElementById('resizer-width').value = resizerImage.width;
+          document.getElementById('resizer-height').value = resizerImage.height;
+          updateResizerCanvas();
+        };
+        resizerImage.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function unloadResizer() {
+      resizerImage = null;
+      document.getElementById('resizer-file').value = '';
+      document.getElementById('resizer-drop-zone').style.display = 'flex';
+      document.getElementById('resizer-workspace').style.display = 'none';
+    }
+
+    function onResizerDimChange(changed) {
+      if (!resizerImage) return;
+      const wInput = document.getElementById('resizer-width');
+      const hInput = document.getElementById('resizer-height');
+      
+      const wVal = parseInt(wInput.value) || 0;
+      const hVal = parseInt(hInput.value) || 0;
+
+      if (changed === 'w' && wVal > 0) {
+        hInput.value = Math.round(wVal * (resizerImage.height / resizerImage.width));
+      } else if (changed === 'h' && hVal > 0) {
+        wInput.value = Math.round(hVal * (resizerImage.width / resizerImage.height));
+      }
+      updateResizerCanvas();
+    }
+
+    function updateResizerCanvas() {
+      if (!resizerImage) return;
+
+      const targetW = parseInt(document.getElementById('resizer-width').value) || 300;
+      const targetH = parseInt(document.getElementById('resizer-height').value) || 80;
+      const paddingOpt = document.getElementById('resizer-padding').value;
+
+      resizerCanvas.width = targetW;
+      resizerCanvas.height = targetH;
+
+      if (paddingOpt === 'none') {
+        resizerCtx.drawImage(resizerImage, 0, 0, targetW, targetH);
+      } else {
+        if (paddingOpt === 'white') {
+          resizerCtx.fillStyle = '#ffffff';
+          resizerCtx.fillRect(0, 0, targetW, targetH);
+        } else {
+          resizerCtx.clearRect(0, 0, targetW, targetH);
+        }
+
+        const scale = Math.min(targetW / resizerImage.width, targetH / resizerImage.height);
+        const fitW = resizerImage.width * scale;
+        const fitH = resizerImage.height * scale;
+
+        const pasteX = (targetW - fitW) / 2;
+        const pasteY = (targetH - fitH) / 2;
+
+        resizerCtx.drawImage(resizerImage, pasteX, pasteY, fitW, fitH);
+      }
+
+      // Handle scaling for CSS preview
+      const wrapper = document.getElementById('resizer-canvas-wrapper');
+      const containerScale = Math.min(400 / targetW, 300 / targetH);
+      resizerCanvas.style.width = (targetW * containerScale) + 'px';
+      resizerCanvas.style.height = (targetH * containerScale) + 'px';
+    }
+
+    function saveResizedImage() {
+      if (!resizerImage) return;
+      const link = document.createElement('a');
+      link.download = 'resized_image.png';
+      link.href = resizerCanvas.toDataURL('image/png');
+      link.click();
+    }
+
+
+    // ==========================================
+    // 3. CUSTOM CROPPER LOGIC
+    // ==========================================
+    let cropperImage = null;
+    let cropStart = null;
+    let cropEnd = null;
+    let isCropSelecting = false;
+
+    const cropperCanvas = document.getElementById('cropper-canvas');
+    const cropperCtx = cropperCanvas.getContext('2d');
+
+    function loadCropper(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        cropperImage = new Image();
+        cropperImage.onload = function() {
+          document.getElementById('cropper-drop-zone').style.display = 'none';
+          document.getElementById('cropper-workspace').style.display = 'grid';
+          resetCropperSelection();
+        };
+        cropperImage.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function unloadCropper() {
+      cropperImage = null;
+      document.getElementById('cropper-file').value = '';
+      document.getElementById('cropper-drop-zone').style.display = 'flex';
+      document.getElementById('cropper-workspace').style.display = 'none';
+    }
+
+    function resetCropperSelection() {
+      if (!cropperImage) return;
+      cropStart = null;
+      cropEnd = null;
+      document.getElementById('crop-btn').disabled = true;
+
+      // Scale canvas to fit image
+      const maxW = 500;
+      const maxH = 350;
+      const scale = Math.min(maxW / cropperImage.width, maxH / cropperImage.height);
+      cropperCanvas.width = cropperImage.width * scale;
+      cropperCanvas.height = cropperImage.height * scale;
+
+      drawCropperCanvas();
+    }
+
+    function drawCropperCanvas() {
+      if (!cropperImage) return;
+
+      cropperCtx.clearRect(0, 0, cropperCanvas.width, cropperCanvas.height);
+      cropperCtx.drawImage(cropperImage, 0, 0, cropperCanvas.width, cropperCanvas.height);
+
+      if (cropStart && cropEnd) {
+        const x = Math.min(cropStart.x, cropEnd.x);
+        const y = Math.min(cropStart.y, cropEnd.y);
+        const w = Math.abs(cropStart.x - cropEnd.x);
+        const h = Math.abs(cropStart.y - cropEnd.y);
+
+        // Semi-transparent overlay outside crop
+        cropperCtx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+        cropperCtx.fillRect(0, 0, cropperCanvas.width, y); // Top
+        cropperCtx.fillRect(0, y + h, cropperCanvas.width, cropperCanvas.height - (y + h)); // Bottom
+        cropperCtx.fillRect(0, y, x, h); // Left
+        cropperCtx.fillRect(x + w, y, cropperCanvas.width - (x + w), h); // Right
+
+        // Border around crop selection
+        cropperCtx.strokeStyle = varColor('--accent');
+        cropperCtx.lineWidth = 2;
+        cropperCtx.setLineDash([4, 4]);
+        cropperCtx.strokeRect(x, y, w, h);
+      }
+    }
+
+    function varColor(varName) {
+      return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+    }
+
+    function startCropSelect(e) {
+      if (!cropperImage) return;
+      const rect = cropperCanvas.getBoundingClientRect();
+      cropStart = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      };
+      cropEnd = null;
+      isCropSelecting = true;
+    }
+
+    function cropSelecting(e) {
+      if (!isCropSelecting || !cropperImage) return;
+      const rect = cropperCanvas.getBoundingClientRect();
+      cropEnd = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      };
+      drawCropperCanvas();
+    }
+
+    function endCropSelect() {
+      if (!cropperImage) return;
+      isCropSelecting = false;
+      if (cropStart && cropEnd) {
+        const w = Math.abs(cropStart.x - cropEnd.x);
+        const h = Math.abs(cropStart.y - cropEnd.y);
+        if (w > 10 && h > 10) {
+          document.getElementById('crop-btn').disabled = false;
+        } else {
+          cropStart = null;
+          cropEnd = null;
+          drawCropperCanvas();
+        }
+      }
+    }
+
+    function saveCroppedImage() {
+      if (!cropperImage || !cropStart || !cropEnd) return;
+
+      const scaleX = cropperImage.width / cropperCanvas.width;
+      const scaleY = cropperImage.height / cropperCanvas.height;
+
+      const sourceX = Math.min(cropStart.x, cropEnd.x) * scaleX;
+      const sourceY = Math.min(cropStart.y, cropEnd.y) * scaleY;
+      const sourceW = Math.abs(cropStart.x - cropEnd.x) * scaleX;
+      const sourceH = Math.abs(cropStart.y - cropEnd.y) * scaleY;
+
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = sourceW;
+      tempCanvas.height = sourceH;
+      const tempCtx = tempCanvas.getContext('2d');
+
+      tempCtx.drawImage(cropperImage, sourceX, sourceY, sourceW, sourceH, 0, 0, sourceW, sourceH);
+
+      const link = document.createElement('a');
+      link.download = 'cropped_signature.png';
+      link.href = tempCanvas.toDataURL('image/png');
+      link.click();
+    }
+
+
+    // ==========================================
+    // 4. BATCH RESIZER LOGIC
+    // ==========================================
+    let batchFilesList = [];
+
+    function loadBatchImages(e) {
+      const files = Array.from(e.target.files);
+      if (files.length === 0) return;
+
+      batchFilesList = batchFilesList.concat(files.map(file => ({
+        file: file,
+        status: 'pending'
+      })));
+
+      document.getElementById('batch-workspace').style.display = 'block';
+      updateBatchListUI();
+    }
+
+    function updateBatchListUI() {
+      const container = document.getElementById('batch-list-container');
+      container.innerHTML = '';
+
+      batchFilesList.forEach((item, idx) => {
+        const sizeKB = (item.file.size / 1024).toFixed(1);
+        const div = document.createElement('div');
+        div.className = 'batch-item';
+        div.innerHTML = `
+          <div class="batch-item-info">
+            <span class="batch-item-name">${item.file.name}</span>
+            <span class="batch-item-size">${sizeKB} KB</span>
+          </div>
+          <span class="batch-item-status status-${item.status}">${item.status.toUpperCase()}</span>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function clearBatch() {
+      batchFilesList = [];
+      document.getElementById('batch-files').value = '';
+      document.getElementById('batch-workspace').style.display = 'none';
+    }
+
+    function processBatch() {
+      if (batchFilesList.length === 0) return;
+
+      const dims = document.getElementById('batch-dimension').value.split('x');
+      const targetW = parseInt(dims[0]);
+      const targetH = parseInt(dims[1]);
+
+      let processedCount = 0;
+
+      batchFilesList.forEach((item, index) => {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            canvas.width = targetW;
+            canvas.height = targetH;
+            const ctx = canvas.getContext('2d');
+
+            // Draw and resize
+            ctx.drawImage(img, 0, 0, targetW, targetH);
+
+            // Download
+            const link = document.createElement('a');
+            link.download = `resized_${item.file.name}`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+
+            item.status = 'done';
+            processedCount++;
+            if (processedCount === batchFilesList.length) {
+              updateBatchListUI();
+              alert(`Success: Processed and downloaded all ${processedCount} images!`);
+            }
+          };
+          img.src = event.target.result;
+        };
+        reader.readAsDataURL(item.file);
+      });
+    }
+  </script>
+</body>
+</html>
