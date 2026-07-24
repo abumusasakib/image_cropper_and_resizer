@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -189,7 +189,7 @@
 
     .panel-header {
       margin-bottom: 2rem;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--header-border);
       padding-bottom: 1rem;
     }
 
@@ -520,6 +520,9 @@
         <p>Signature & Image Toolset</p>
       </div>
     </div>
+    <button id="theme-toggle" class="btn btn-secondary" onclick="toggleTheme()" style="padding: 0.5rem 1rem; font-size: 0.85rem; border-radius: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+      ☀️ Light Mode
+    </button>
   </header>
 
   <main>
@@ -1266,6 +1269,22 @@
     setupDragAndDrop('resizer-drop-zone', 'resizer-file', loadResizer);
     setupDragAndDrop('cropper-drop-zone', 'cropper-file', loadCropper);
     setupDragAndDrop('batch-drop-zone', 'batch-files', loadBatchImages);
+    // ==========================================
+    // THEME SWITCHER LOGIC
+    // ==========================================
+    function toggleTheme() {
+      const root = document.documentElement;
+      const currentTheme = root.getAttribute('data-theme') || 'dark';
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', newTheme);
+      
+      const toggleBtn = document.getElementById('theme-toggle');
+      if (newTheme === 'dark') {
+        toggleBtn.innerHTML = '☀️ Light Mode';
+      } else {
+        toggleBtn.innerHTML = '🌙 Dark Mode';
+      }
+    }
   </script>
 </body>
 </html>
